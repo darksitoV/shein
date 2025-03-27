@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información de tu IP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            display: inline-block;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Información sobre tu IP</h1>
+    <div class="info" id="info">
+        <p>Obteniendo información...</p>
+    </div>
+
+    <script>
+        fetch('https://api64.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('info').innerHTML = `
+                    <p><strong>IP:</strong> ${data.ip}</p>
+                `;
+                return fetch(`https://ipapi.co/${data.ip}/json/`);
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('info').innerHTML += `
+                    <p><strong>Ciudad:</strong> ${data.city}</p>
+                    <p><strong>Región:</strong> ${data.region}</p>
+                    <p><strong>País:</strong> ${data.country_name}</p>
+                    <p><strong>ISP:</strong> ${data.org}</p>
+                    <p><strong>Ubicación:</strong> ${data.latitude}, ${data.longitude}</p>
+                `;
+            })
+            .catch(error => {
+                document.getElementById('info').innerHTML = '<p>Error al obtener la información.</p>';
+                console.error('Error:', error);
+            });
+    </script>
+</body>
+</html>
